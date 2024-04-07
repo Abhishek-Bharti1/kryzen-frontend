@@ -77,18 +77,17 @@ const Section = ({
     bg = "bg-yellow-500";
     tasksToMap = rework;
   }
-  
   const addItemToSection = async (id,_id) => {
     try {
-      await axios.put(`https://apis-puce.vercel.app/api/tasks/${_id}`, { status:status });
       setTasks((prev) => {
-        return prev.map((task) => {
-          if (task.id === id) {
-            return { ...task, status };
-          }
-          return task;
-        });
-      });
+       return prev.map((task) => {
+         if (task.id === id) {
+           return { ...task, status };
+         }
+         return task;
+       });
+     });
+      await axios.put(`https://apis-puce.vercel.app/api/tasks/${_id}`, { status:status });
 
       toast.success("Task updated successfully", { icon: "🙌" });
     } catch (error) {

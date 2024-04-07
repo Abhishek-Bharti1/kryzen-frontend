@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import CreateTask from "./components/CreateTask";
-import ListTasks from "./components/ListTasks";
+import React, { lazy, useEffect, useState } from "react";
+const CreateTask = lazy(() => import("./components/CreateTask"));
+const ListTasks = lazy(() => import("./components/ListTasks"));
+
+
 import toast,{ Toaster } from "react-hot-toast";
 import axios from "axios";
 const App = () => {
