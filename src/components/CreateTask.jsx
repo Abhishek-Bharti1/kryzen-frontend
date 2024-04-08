@@ -10,7 +10,10 @@ const CreateTask = ({ tasks, setTasks }) => {
   });
 const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if(newTask.name.length < 3){
+      toast.error("Please enter at least 3 characters",{icon:"😒"});
+      return;
+    }
     try {
       const response = await axios.post("https://apis-puce.vercel.app/api/tasks", { name: newTask.name,id:newTask.id,status: newTask.status });
       const { task, message } = response.data;
