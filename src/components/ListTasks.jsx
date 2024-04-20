@@ -54,7 +54,7 @@ const Section = ({
 }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "task",
-    drop:(item)=>addItemToSection(item.id,item._id),
+    drop:(item)=>addItemToSection(item.id,item._id,item.date),
         collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
@@ -77,17 +77,17 @@ const Section = ({
     bg = "bg-yellow-500";
     tasksToMap = rework;
   }
-  const addItemToSection = async (id,_id) => {
+  const addItemToSection = async (id,_id,date) => {
     try {
       setTasks((prev) => {
        return prev.map((task) => {
          if (task.id === id) {
-           return { ...task, status };
+           return { ...task, status,date };
          }
          return task;
        });
      });
-      await axios.put(`https://apis-puce.vercel.app/api/tasks/${_id}`, { status:status });
+      await axios.put(`http://localhost:3000/api/tasks/${_id}`, { status:status,date:date });
 
       toast.success("Task updated successfully", { icon: "🙌" });
     } catch (error) {
@@ -120,14 +120,18 @@ const Header = ({ text, bg, count }) => {
 };
 
 const Task = ({ task, tasks, setTasks }) => {
+  const [isEditDate,setIsDate] = useState(false);
+  const [newDate,setNewDate] = useState("");
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
-    item:{id:task.id,_id:task._id},
+    item:{id:task.id,_id:task._id,date:task.date},
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
-
+const handleEditDate=()=>{
+  setIsDate(!isEditDate);
+}
   const handleRemove = async (_id,id) => {
     try {
       await axios.delete(`https://apis-puce.vercel.app/api/tasks/${_id}`);
@@ -141,12 +145,31 @@ const Task = ({ task, tasks, setTasks }) => {
     }
   };
 
+const handleChangeDate=(e)=>{
+setNewDate(e.target.value);
+addItemToSection(newDate);
+}
+
   return (
     <div
       ref={drag}
       className={`relative p-4 mt-8 shadow-md rounded-md ${isDragging ? "opacity-25":"opacity-100"} cursor-grab`}
     >
-      <p>{task.name}</p>
+      <p>{task.name} </p>
+      <p>Date: {task.date}</p>
+<button onClick={handleEditDate} style={{border:"1px solid red"}}>
+  Edit Date
+</button>
+{isEditDate ? 
+  <input
+        type="date"
+        className="border-2 border-slate-400 bg-slate-100 rounded-md mr-4 h-12 w-64 px-1"
+        value={newDate}
+        onChange={(e) =>
+         handleChangeDate(e)
+        }
+      />
+: null}
       <button
         className="absolute bottom-1 right-1 text-slate-400"
         onClick={() => handleRemove(task._id,task.id)

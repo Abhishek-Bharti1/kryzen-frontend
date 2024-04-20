@@ -10,7 +10,7 @@ const App = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("https://apis-puce.vercel.app/api/tasks");
+        const response = await axios.get("http://localhost:3000/api/tasks");
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -37,12 +37,13 @@ const App = () => {
       console.error("Error downloading PDF:", error);
     }
   };
+
   return (
     <>
       <Toaster />
       <div className="bg-slate-100 w-screen h-screen flex flex-col items-center pt-32 gap-16">
-        <CreateTask tasks={tasks} setTasks={setTasks} />
-        <ListTasks tasks={tasks} setTasks={setTasks} />
+        <CreateTask tasks={tasks} setTasks={setTasks}/>
+        <ListTasks tasks={tasks} setTasks={setTasks}/>
       <button onClick={handleDownload} className="bg-cyan-500 rounded-md px-4 h-12 text-white flex float-end items-center justify-center">Download task as PDF</button>
       </div>
     </>
